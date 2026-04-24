@@ -1,0 +1,60 @@
+! ============================================================
+! Branch Router - TechNova Solutions Pvt Ltd
+! Device: Cisco 2911 (or equivalent)
+! Role  : Branch LAN gateway + OSPF peer + DHCP server
+! ============================================================
+
+enable
+configure terminal
+
+! --- Hostname ---
+hostname Branch-Router
+
+! ============================================================
+! SECTION 1: LAN Interface (to Branch Switch)
+! ============================================================
+
+interface GigabitEthernet0/0
+ description LAN_TO_BRANCH-SWITCH
+ ip address 192.168.50.1 255.255.255.0
+ no shutdown
+
+! ============================================================
+! SECTION 2: WAN Interface (Serial link to HQ Router)
+! ============================================================
+
+interface Serial0/0/0
+ description WAN_TO_HQ-ROUTER
+ ip address 10.0.0.2 255.255.255.252
+ no shutdown
+
+! ============================================================
+! SECTION 3: DHCP Server (for Branch LAN)
+! ============================================================
+
+ip dhcp excluded-address 192.168.50.1 192.168.50.9
+
+ip dhcp pool BRANCH_LAN
+ network 192.168.50.0 255.255.255.0
+ default-router 192.168.50.1
+ dns-server 8.8.8.8
+ lease 7
+
+! ============================================================
+! SECTION 4: OSPF Dynamic Routing
+! ============================================================
+
+router ospf 1
+ router-id 2.2.2.2
+ log-adjacency-changes
+ ! Branch LAN
+ network 192.168.50.0 0.0.0.255 area 0
+ ! WAN link
+ network 10.0.0.0 0.0.0.3 area 0
+
+! ============================================================
+! SECTION 5: Save Configuration
+! ============================================================
+
+end
+write memory

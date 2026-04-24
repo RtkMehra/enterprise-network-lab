@@ -48,7 +48,7 @@ The goal was to design a **scalable, secure, and segmented network architecture*
 
 ## 🖼️ Topology
 
-(Add `topology.png` here)
+![Enterprise Network Topology – TechNova Solutions](topology.png)
 
 ---
 
@@ -257,9 +257,15 @@ Ritik Mehra
 
 ## 📎 Files Included
 
-* `network.pkt` → Packet Tracer file
-* `topology.png` → Network diagram
-* `configs/` → CLI configurations
+| File | Description |
+|------|-------------|
+| `network.pkt` | Cisco Packet Tracer simulation file |
+| `topology.png` | Full network topology diagram |
+| `configs/hq-router.txt` | HQ Router – Sub-interfaces, OSPF, ACL |
+| `configs/hq-switch.txt` | HQ Switch – VLANs, access/trunk ports |
+| `configs/branch-router.txt` | Branch Router – LAN, DHCP, OSPF |
+| `configs/branch-switch.txt` | Branch Switch – VLAN 50, access ports |
+| `configs/dhcp-server-config.txt` | DHCP/DNS Server pool setup guide |
 
 ---
 

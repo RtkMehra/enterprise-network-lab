@@ -1,0 +1,97 @@
+! ============================================================
+! HQ Router - TechNova Solutions Pvt Ltd
+! Device: Cisco 2911 (or equivalent)
+! Role  : Inter-VLAN routing (Router-on-a-Stick) + OSPF + ACL
+! ============================================================
+
+enable
+configure terminal
+
+! --- Hostname ---
+hostname HQ-Router
+
+! ============================================================
+! SECTION 1: Physical Interface (Trunk to HQ-Switch)
+! ============================================================
+
+interface GigabitEthernet0/0
+ description TRUNK_TO_HQ-SWITCH
+ no shutdown
+
+! ============================================================
+! SECTION 2: Sub-Interfaces for Inter-VLAN Routing
+! ============================================================
+
+! --- VLAN 10 - HR ---
+interface GigabitEthernet0/0.10
+ description VLAN10_HR
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ ip helper-address 192.168.30.100
+
+! --- VLAN 20 - Finance ---
+interface GigabitEthernet0/0.20
+ description VLAN20_FINANCE
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip helper-address 192.168.30.100
+
+! --- VLAN 30 - IT ---
+interface GigabitEthernet0/0.30
+ description VLAN30_IT
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ ip helper-address 192.168.30.100
+
+! --- VLAN 40 - Guest ---
+interface GigabitEthernet0/0.40
+ description VLAN40_GUEST
+ encapsulation dot1Q 40
+ ip address 192.168.40.1 255.255.255.0
+ ip helper-address 192.168.30.100
+
+! ============================================================
+! SECTION 3: WAN Interface (Serial link to Branch Router)
+! ============================================================
+
+interface Serial0/0/0
+ description WAN_TO_BRANCH-ROUTER
+ ip address 10.0.0.1 255.255.255.252
+ clock rate 64000
+ no shutdown
+
+! ============================================================
+! SECTION 4: OSPF Dynamic Routing
+! ============================================================
+
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ ! HQ VLANs
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+ network 192.168.40.0 0.0.0.255 area 0
+ ! WAN link
+ network 10.0.0.0 0.0.0.3 area 0
+
+! ============================================================
+! SECTION 5: ACL - Security Policy
+! Deny Guest (VLAN 40) from accessing Finance (VLAN 20)
+! Permit all other traffic
+! ============================================================
+
+ip access-list extended VLAN_SECURITY
+ deny   ip 192.168.40.0 0.0.0.255 192.168.20.0 0.0.0.255
+ permit ip any any
+
+! Apply ACL inbound on the physical interface
+interface GigabitEthernet0/0
+ ip access-group VLAN_SECURITY in
+
+! ============================================================
+! SECTION 6: Save Configuration
+! ============================================================
+
+end
+write memory

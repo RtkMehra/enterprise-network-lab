@@ -1,0 +1,61 @@
+! ============================================================
+! DHCP / DNS Server Configuration
+! TechNova Solutions Pvt Ltd - HQ
+! Device  : Cisco Packet Tracer Generic Server
+! IP Addr : 192.168.30.100 (Static, in VLAN 30 - IT)
+! ============================================================
+
+! ============================================================
+! STATIC IP ASSIGNMENT (configure on the server device)
+! ============================================================
+! IP Address : 192.168.30.100
+! Subnet Mask: 255.255.255.0
+! Gateway    : 192.168.30.1
+! DNS Server : 8.8.8.8
+
+! ============================================================
+! DHCP POOL CONFIGURATION
+! (Configure via Services > DHCP in Packet Tracer GUI)
+! ============================================================
+
+! --- Pool: VLAN10_HR ---
+! Pool Name    : VLAN10_HR
+! Default GW   : 192.168.10.1
+! DNS Server   : 8.8.8.8
+! Start IP     : 192.168.10.10
+! Subnet Mask  : 255.255.255.0
+! Max Users    : 50
+
+! --- Pool: VLAN20_FINANCE ---
+! Pool Name    : VLAN20_FINANCE
+! Default GW   : 192.168.20.1
+! DNS Server   : 8.8.8.8
+! Start IP     : 192.168.20.10
+! Subnet Mask  : 255.255.255.0
+! Max Users    : 50
+
+! --- Pool: VLAN30_IT ---
+! Pool Name    : VLAN30_IT
+! Default GW   : 192.168.30.1
+! DNS Server   : 8.8.8.8
+! Start IP     : 192.168.30.10
+! Subnet Mask  : 255.255.255.0
+! Max Users    : 50
+! (Exclude 192.168.30.100 — used by this server)
+
+! --- Pool: VLAN40_GUEST ---
+! Pool Name    : VLAN40_GUEST
+! Default GW   : 192.168.40.1
+! DNS Server   : 8.8.8.8
+! Start IP     : 192.168.40.10
+! Subnet Mask  : 255.255.255.0
+! Max Users    : 50
+
+! ============================================================
+! DNS CONFIGURATION
+! (Configure via Services > DNS in Packet Tracer GUI)
+! ============================================================
+! Enable DNS Service: ON
+! DNS Record:
+!   Name   : technova.local
+!   Address: 192.168.30.100

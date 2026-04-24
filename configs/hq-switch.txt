@@ -1,0 +1,83 @@
+! ============================================================
+! HQ Switch - TechNova Solutions Pvt Ltd
+! Device: Cisco Catalyst 2960 (or equivalent Layer 2 switch)
+! Role  : VLAN segmentation + Trunk to HQ Router
+! ============================================================
+
+enable
+configure terminal
+
+! --- Hostname ---
+hostname HQ-Switch
+
+! ============================================================
+! SECTION 1: Create VLANs
+! ============================================================
+
+vlan 10
+ name HR
+
+vlan 20
+ name Finance
+
+vlan 30
+ name IT
+
+vlan 40
+ name Guest
+
+! ============================================================
+! SECTION 2: Assign Access Ports to VLANs
+! ============================================================
+
+! --- VLAN 10 - HR (Ports fa0/1 - fa0/2) ---
+interface range FastEthernet0/1 - 2
+ description HR_PC
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+
+! --- VLAN 20 - Finance (Ports fa0/3 - fa0/4) ---
+interface range FastEthernet0/3 - 4
+ description Finance_PC
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+
+! --- VLAN 30 - IT (Ports fa0/5 - fa0/6) ---
+interface range FastEthernet0/5 - 6
+ description IT_PC
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+
+! --- VLAN 40 - Guest (Ports fa0/7 - fa0/8) ---
+interface range FastEthernet0/7 - 8
+ description Guest_PC
+ switchport mode access
+ switchport access vlan 40
+ spanning-tree portfast
+
+! --- DHCP/DNS Server (Port fa0/9) - in IT VLAN ---
+interface FastEthernet0/9
+ description DHCP_DNS_Server
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+
+! ============================================================
+! SECTION 3: Trunk Port (Uplink to HQ Router)
+! ============================================================
+
+interface FastEthernet0/24
+ description TRUNK_TO_HQ-ROUTER
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40
+ switchport trunk native vlan 99
+
+! ============================================================
+! SECTION 4: Save Configuration
+! ============================================================
+
+end
+write memory

@@ -1,0 +1,44 @@
+! ============================================================
+! Branch Switch - TechNova Solutions Pvt Ltd
+! Device: Cisco Catalyst 2960 (or equivalent Layer 2 switch)
+! Role  : Branch LAN access layer
+! ============================================================
+
+enable
+configure terminal
+
+! --- Hostname ---
+hostname Branch-Switch
+
+! ============================================================
+! SECTION 1: Create VLAN (Branch uses a single LAN)
+! ============================================================
+
+vlan 50
+ name BRANCH_LAN
+
+! ============================================================
+! SECTION 2: Assign Access Ports to Branch VLAN
+! ============================================================
+
+interface range FastEthernet0/1 - 4
+ description Branch_PC
+ switchport mode access
+ switchport access vlan 50
+ spanning-tree portfast
+
+! ============================================================
+! SECTION 3: Uplink to Branch Router
+! ============================================================
+
+interface FastEthernet0/24
+ description UPLINK_TO_BRANCH-ROUTER
+ switchport mode access
+ switchport access vlan 50
+
+! ============================================================
+! SECTION 4: Save Configuration
+! ============================================================
+
+end
+write memory
